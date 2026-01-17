@@ -1,17 +1,16 @@
 const exp = require("express")
+const { adminAuth, userAuth } = require("./middleware/auth.js")
 const app = exp()
 
-app.use("/user/2", (req, res) => {
-    res.send("Hello from home/2 page")
+app.use("/admin/getAllData", adminAuth, (req, res) => {
+    res.send("Get all data")
+})
+app.use("/user/login", userAuth, (req, res) => {
+    res.send("Getting users data")
 })
 
-app.use("/user", (req, res) => {
-    res.send("Hello from user page")
-})
 
-app.use("/", (req, res) => {
-    res.send("Hello from home page")
-})
+
 
 app.listen(1111, () => {
     console.log("server is on.......");
