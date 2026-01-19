@@ -16,6 +16,21 @@ app.post("/signup", async (req, res) => {
 
 })
 
+app.get("/user", async (req, res) => {
+    const userEmail = req.body.emailId
+    const user = await User.findOne({ emailId: userEmail })
+    res.send(user)
+})
+
+app.get("/feed", async (req, res) => {
+    try {
+        const allUser = await User.find({})
+        res.send(allUser)
+    } catch (err) {
+        res.status(404).send("Somethine went wrong")
+    }
+})
+
 connectDb().then(() => {
     console.log("Connect Db Success");
     app.listen(1111, () => {
