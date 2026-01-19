@@ -3,16 +3,10 @@ const { connectDb } = require("./config/database.js")
 const User = require("./model/user.js")
 const { default: mongoose } = require("mongoose")
 const app = exp()
+app.use(exp.json())
 app.post("/signup", async (req, res) => {
 
-    const userObj = {
-        firstName: "Hari",
-        lastName: "V Nair",
-        emailId: "harivnair46@gmail.com",
-        age: 23,
-        pass: "hari123"
-    }
-    const user = new User(userObj)
+    const user = new User(req.body)
     try {
         await user.save()
         res.send("Data save Successfully")
