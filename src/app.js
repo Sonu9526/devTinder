@@ -22,7 +22,6 @@ app.post("/signup", async (req, res) => {
 
 })
 
-
 connectDb().then(() => {
     console.log("Connect Db Success");
     app.listen(1111, () => {
@@ -32,7 +31,5 @@ connectDb().then(() => {
 }).catch((err) => {
     console.log(err + "dfdfd");
 })
-
-
 
 
