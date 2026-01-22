@@ -44,13 +44,14 @@ app.delete("/user", async (req, res) => {
 })
 
 // update the user from DB
-
 app.patch("/user", async (req, res) => {
     const userId = req.body.userId
+
     const data = req.body
     try {
         await User.findByIdAndUpdate(userId, data)
         res.send("User data updated Sucessfully")
+        runValidators: true
     } catch (err) {
         res.status(404).send("Somthing went wrong")
     }
