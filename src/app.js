@@ -44,16 +44,45 @@ app.delete("/user", async (req, res) => {
 })
 
 // update the user from DB
-app.patch("/user", async (req, res) => {
-    const userId = req.body.userId
-
-    const data = req.body
+app.patch("/user/:userId", async (req, res) => {
     try {
-        await User.findByIdAndUpdate(userId, data)
-        res.send("User data updated Sucessfully")
-        runValidators: true
+        const userId = req.params.userId
+        const data = req.body
+
+        const ALLOWED_UPDATES = ["userId", "age", "about", "gender", "skill"]
+
+        // 1️⃣ Check allowed fields FIRST
+        const isUpdateAllowed = Object.keys(data).every(key =>
+            ALLOWED_UPDATES.includes(key)
+        )
+
+        if (!isUpdateAllowed) {
+            return res.status(400).send("Update not allowed")
+        }
+
+        // 2️⃣ Custom validation BEFORE DB update
+        if (data.skill && data.skill.length > 10) {
+            return res.status(400).send("Skills cannot be more than 10")
+        }
+
+        // 3️⃣ Update with validation enabled
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            data,
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+
+        if (!updatedUser) {
+            return res.status(404).send("User not found")
+        }
+
+        res.send("User data updated successfully")
+
     } catch (err) {
-        res.status(404).send("Somthing went wrong")
+        res.status(400).send(err.message)
     }
 })
 
