@@ -1,5 +1,7 @@
 const exp = require("express")
 const { connectDb } = require("./config/database.js")
+const bcrypt = require("bcrypt")
+const { validateSignUpdata } = require("./utils/validation.js")
 const User = require("./model/user.js")
 const { default: mongoose } = require("mongoose")
 const app = exp()
@@ -7,12 +9,24 @@ app.use(exp.json())
 
 // save the data to the DB
 app.post("/signup", async (req, res) => {
-    const user = new User(req.body)
+
     try {
+        validateSignUpdata(req)
+        const { firstName, lastName, emailId, password, age, gender, skills } = req.body;
+        const passwordHash = await bcrypt.hash(password, 10)
+        const user = new User({
+            firstName,
+            lastName,
+            emailId,
+            password: passwordHash,
+            age,
+            gender,
+            skills
+        })
         await user.save()
         res.send("Data save Successfully")
     } catch (err) {
-        res.status(402).send("there is an error in saving data" + err)
+        res.status(402).send("ERROR : " + err.message)
     }
 })
 
